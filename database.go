@@ -22,6 +22,7 @@ func retrieveKruidenAmount() {
 	handleError(err)
 	defer data.Close()
 	for data.Next() {
-
+		err := data.Scan(&ID)
+		handleError(err)
 	}
 }
