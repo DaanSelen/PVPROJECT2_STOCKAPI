@@ -5,6 +5,13 @@ import (
 	"log"
 )
 
+type Product struct {
+	ID          int    `json:"id"`
+	Naam        string `json:"naam"`
+	Hoeveelheid int    `json:"hoeveelheid"`
+	Status      string `json:"status"`
+}
+
 func initSys() {
 
 	dbpass := getPasswords()
