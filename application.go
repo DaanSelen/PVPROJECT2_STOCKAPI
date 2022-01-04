@@ -13,22 +13,24 @@ type Product struct {
 }
 
 func initSys() {
-
 	dbpass := getPasswords()
 	initDBConn(dbpass)
 }
 
-func handleError(err error) {
-	log.Println("Error encountered, error:", err)
+func handleError(err error, location string) {
+	if err != nil {
+		log.Println("Error encountered at:", location, "error:", err)
+	}
 }
 
 func getPasswords() string {
 	data, err := ioutil.ReadFile("dbpass.key")
-	handleError(err)
+	handleError(err, "Retrieving Passwords")
 	dbpassword := string(data)
 	return dbpassword
 }
 
-func getKruidenAmount() {
-	retrieveKruidenAmount()
+func getAllProducts(product string) []Product {
+	retrievedProducts := retrieveAllProducts(product)
+	return retrievedProducts
 }
