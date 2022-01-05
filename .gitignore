@@ -1,9 +1,10 @@
 # Binaries for programs and plugins
 dbpass.key
-*.exe~
+*.exe
 *.dll
 *.so
 *.dylib
+*.key
 
 # Test binary, built with `go test -c`
 *.test

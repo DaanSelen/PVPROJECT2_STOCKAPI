@@ -31,6 +31,11 @@ func getPasswords() string {
 }
 
 func getAllProducts(product string) []Product {
-	retrievedProducts := retrieveAllProducts(product)
+	retrievedProducts := retrieveAllProducts(("SELECT * FROM " + product))
+	return retrievedProducts
+}
+
+func getProductSearch(product, query string) []Product {
+	retrievedProducts := retrieveAllProducts(("SELECT * FROM " + product + " WHERE naam LIKE '%" + query + "%'"))
 	return retrievedProducts
 }

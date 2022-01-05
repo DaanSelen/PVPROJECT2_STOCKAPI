@@ -19,23 +19,10 @@ func initDBConn(password string) {
 	}
 }
 
-func retrieveKruidenAmount() []Product {
-	data, err := voorraad.Query("SELECT * FROM kruiden")
-	handleError(err, "Sending SQL Query for all kruiden")
-	defer data.Close()
-	var products []Product
-	for data.Next() {
-		var product Product
-		err := data.Scan(&product.ID, &product.Naam, &product.Hoeveelheid, &product.Status)
-		handleError(err, "Scanning the content of the Database response")
-		products = append(products, product)
-	}
-	return products
-}
-
-func retrieveAllProducts(product string) []Product {
-	data, err := voorraad.Query("SELECT * FROM " + product)
-	handleError(err, ("Sending SQL Query for all " + product))
+func retrieveAllProducts(queryString string) []Product {
+	log.Println(queryString) //REMOVE LATER
+	data, err := voorraad.Query(queryString)
+	handleError(err, "Sending SQL Query for all ")
 	defer data.Close()
 	var products []Product
 	for data.Next() {
