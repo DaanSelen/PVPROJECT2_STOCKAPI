@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"strconv"
 )
 
 type Product struct {
@@ -23,6 +24,17 @@ func handleError(err error, location string) {
 	}
 }
 
+func changeToInt(value1 string) int {
+	changedValue, err := strconv.Atoi(value1)
+	handleError(err, "Converting to int")
+	return changedValue
+}
+
+func changeToString(value1 int) string {
+	changedValue := strconv.Itoa(value1)
+	return changedValue
+}
+
 func getPasswords() string {
 	data, err := ioutil.ReadFile("dbpass.key")
 	handleError(err, "Retrieving Passwords")
@@ -41,5 +53,7 @@ func getProductSearch(table, query string) []Product {
 }
 
 func postProductAmount(table, product, amountChange string) {
-	giveProductAmount(("UPDATE " + table + " SET Hoeveelheid=Hoeveelheid+" + amountChange + " WHERE Naam='" + product + "'"))
+	hoeveelheid := retrieveHoeveelheid(("SELECT Hoeveelheid FROM " + table))
+	intAmount := hoeveelheid + changeToInt(amountChange)
+	giveProductAmount(("UPDATE " + table + " SET Hoeveelheid=" + changeToString(intAmount) + " WHERE Naam='" + product + "'"))
 }

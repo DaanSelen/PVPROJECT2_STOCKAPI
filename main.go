@@ -36,18 +36,23 @@ func main() {
 
 	myRouter.HandleFunc("/voorraad/all/fruit", handleGetAllFruit).Methods("GET")
 	myRouter.HandleFunc("/voorraad/fruit", handleGetFruitWQuery).Methods("GET")
+	myRouter.HandleFunc("/voorraad/fruit", handlePostFruitWQuery).Methods("POST")
 
 	myRouter.HandleFunc("/voorraad/all/kruid", handleGetAllKruid).Methods("GET")
 	myRouter.HandleFunc("/voorraad/kruid", handleGetKruidWQuery).Methods("GET")
+	myRouter.HandleFunc("/voorraad/kruid", handlePostKruidWQuery).Methods("POST")
 
 	myRouter.HandleFunc("/voorraad/all/snoep", handleGetAllSnoep).Methods("GET")
 	myRouter.HandleFunc("/voorraad/snoep", handleGetSnoepWQuery).Methods("GET")
+	myRouter.HandleFunc("/voorraad/snoep", handlePostSnoepWQuery).Methods("POST")
 
 	myRouter.HandleFunc("/voorraad/all/vlees", handleGetAllVlees).Methods("GET")
 	myRouter.HandleFunc("/voorraad/vlees", handleGetVleesWQuery).Methods("GET")
+	myRouter.HandleFunc("/voorraad/vlees", handlePostVleesWQuery).Methods("POST")
 
 	myRouter.HandleFunc("/voorraad/all/zuivel", handleGetAllZuivel).Methods("GET")
 	myRouter.HandleFunc("/voorraad/zuivel", handleGetZuivelWQuery).Methods("GET")
+	myRouter.HandleFunc("/voorraad/zuivel", handlePostZuivelWQuery).Methods("POST")
 
 	http.ListenAndServe(":61909", myRouter)
 }
@@ -190,16 +195,77 @@ func handleGetZuivelWQuery(w http.ResponseWriter, r *http.Request) {
 func handlePostBroodWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	acQuery, ok := r.URL.Query()["ac"]
-	pQuery, ok := r.URL.Query()["p"]
-	if !ok || len(acQuery[0]) < 1 || acQuery[0] == "0" {
-		w.WriteHeader(400)
-	} else if !ok || len(pQuery[0]) < 1 || pQuery[0] == "0" {
+	acQuery, ok1 := r.URL.Query()["ac"]
+	pQuery, ok2 := r.URL.Query()["p"]
+	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
 		w.WriteHeader(400)
 	} else {
 		postProductAmount(cat1, pQuery[0], acQuery[0])
 	}
 }
 func handlePostBroodbelegWQuery(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
+	acQuery, ok1 := r.URL.Query()["ac"]
+	pQuery, ok2 := r.URL.Query()["p"]
+	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
+		w.WriteHeader(400)
+	} else {
+		postProductAmount(cat2, pQuery[0], acQuery[0])
+	}
+}
+func handlePostFruitWQuery(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	acQuery, ok1 := r.URL.Query()["ac"]
+	pQuery, ok2 := r.URL.Query()["p"]
+	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
+		w.WriteHeader(400)
+	} else {
+		postProductAmount(cat3, pQuery[0], acQuery[0])
+	}
+}
+func handlePostKruidWQuery(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	pQuery, ok2 := r.URL.Query()["p"]
+	acQuery, ok1 := r.URL.Query()["ac"]
+	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
+		w.WriteHeader(400)
+	} else {
+		postProductAmount(cat4, pQuery[0], acQuery[0])
+	}
+}
+func handlePostSnoepWQuery(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	pQuery, ok2 := r.URL.Query()["p"]
+	acQuery, ok1 := r.URL.Query()["ac"]
+	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
+		w.WriteHeader(400)
+	} else {
+		postProductAmount(cat5, pQuery[0], acQuery[0])
+	}
+}
+func handlePostVleesWQuery(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	pQuery, ok2 := r.URL.Query()["p"]
+	acQuery, ok1 := r.URL.Query()["ac"]
+	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
+		w.WriteHeader(400)
+	} else {
+		postProductAmount(cat6, pQuery[0], acQuery[0])
+	}
+}
+func handlePostZuivelWQuery(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	pQuery, ok2 := r.URL.Query()["p"]
+	acQuery, ok1 := r.URL.Query()["ac"]
+	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
+		w.WriteHeader(400)
+	} else {
+		postProductAmount(cat7, pQuery[0], acQuery[0])
+	}
 }

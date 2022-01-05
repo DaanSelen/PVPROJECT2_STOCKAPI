@@ -19,6 +19,17 @@ func initDBConn(password string) {
 	}
 }
 
+func retrieveHoeveelheid(queryString string) int {
+	var hoeveelheid int
+
+	data, err := voorraad.Query(queryString)
+	handleError(err, "Getting hoeveelheid Query")
+	for data.Next() {
+		data.Scan(&hoeveelheid)
+	}
+	return hoeveelheid
+}
+
 func retrieveAllProducts(queryString string) []Product {
 	log.Println(queryString) //REMOVE LATER
 	data, err := voorraad.Query(queryString)
@@ -36,7 +47,7 @@ func retrieveAllProducts(queryString string) []Product {
 
 func giveProductAmount(queryString string) {
 	log.Println(queryString)
-	/*data, err := voorraad.Query(queryString)
+	/*_, err := voorraad.Query(queryString)
 	handleError(err, "Sending SQL Query for all ")
-	defer data.Close()*/
+	*/
 }
