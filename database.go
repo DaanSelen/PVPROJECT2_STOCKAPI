@@ -33,3 +33,10 @@ func retrieveAllProducts(queryString string) []Product {
 	}
 	return products
 }
+
+func giveProductAmount(queryString string) {
+	log.Println(queryString)
+	/*data, err := voorraad.Query(queryString)
+	handleError(err, "Sending SQL Query for all ")
+	defer data.Close()*/
+}

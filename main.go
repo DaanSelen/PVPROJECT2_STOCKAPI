@@ -28,10 +28,11 @@ func main() {
 
 	myRouter.HandleFunc("/voorraad/all/brood", handleGetAllBrood).Methods("GET")
 	myRouter.HandleFunc("/voorraad/brood", handleGetBroodWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/brood", handleGetBroodWQuery).Methods("POST")
+	myRouter.HandleFunc("/voorraad/brood", handlePostBroodWQuery).Methods("POST")
 
 	myRouter.HandleFunc("/voorraad/all/broodbeleg", handleGetAllBroodbeleg).Methods("GET")
 	myRouter.HandleFunc("/voorraad/broodbeleg", handleGetBroodbelegWQuery).Methods("GET")
+	myRouter.HandleFunc("/voorraad/broodbeleg", handlePostBroodbelegWQuery).Methods("POST")
 
 	myRouter.HandleFunc("/voorraad/all/fruit", handleGetAllFruit).Methods("GET")
 	myRouter.HandleFunc("/voorraad/fruit", handleGetFruitWQuery).Methods("GET")
@@ -51,10 +52,12 @@ func main() {
 	http.ListenAndServe(":61909", myRouter)
 }
 
+//ROOT RESPONSE
 func handleVoorraadRoot(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("Root directory for the voorraad tree.")
 }
 
+//ALL PRODUCTS WITHOUT QUERY
 func handleGetAllBrood(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -98,6 +101,7 @@ func handleGetAllZuivel(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(retrievedZuivel)
 }
 
+//WITH QUERY
 func handleGetBroodWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var retrievedProducts []Product
@@ -181,4 +185,21 @@ func handleGetZuivelWQuery(w http.ResponseWriter, r *http.Request) {
 		retrievedProducts = getProductSearch(cat7, sQuery[0])
 	}
 	json.NewEncoder(w).Encode(retrievedProducts)
+}
+
+func handlePostBroodWQuery(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	acQuery, ok := r.URL.Query()["ac"]
+	pQuery, ok := r.URL.Query()["p"]
+	if !ok || len(acQuery[0]) < 1 || acQuery[0] == "0" {
+		w.WriteHeader(400)
+	} else if !ok || len(pQuery[0]) < 1 || pQuery[0] == "0" {
+		w.WriteHeader(400)
+	} else {
+		postProductAmount(cat1, pQuery[0], acQuery[0])
+	}
+}
+func handlePostBroodbelegWQuery(w http.ResponseWriter, r *http.Request) {
+
 }

@@ -30,12 +30,16 @@ func getPasswords() string {
 	return dbpassword
 }
 
-func getAllProducts(product string) []Product {
-	retrievedProducts := retrieveAllProducts(("SELECT * FROM " + product))
+func getAllProducts(table string) []Product {
+	retrievedProducts := retrieveAllProducts(("SELECT * FROM " + table))
 	return retrievedProducts
 }
 
-func getProductSearch(product, query string) []Product {
-	retrievedProducts := retrieveAllProducts(("SELECT * FROM " + product + " WHERE naam LIKE '%" + query + "%'"))
+func getProductSearch(table, query string) []Product {
+	retrievedProducts := retrieveAllProducts(("SELECT * FROM " + table + " WHERE naam LIKE '%" + query + "%'"))
 	return retrievedProducts
+}
+
+func postProductAmount(table, product, amountChange string) {
+	giveProductAmount(("UPDATE " + table + " SET Hoeveelheid=Hoeveelheid+" + amountChange + " WHERE Naam='" + product + "'"))
 }
