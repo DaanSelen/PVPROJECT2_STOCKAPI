@@ -35,6 +35,14 @@ func changeToString(value1 int) string {
 	return changedValue
 }
 
+func checkIfInt(value1 string) bool {
+	if _, err := strconv.Atoi(value1); err == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 func getPasswords() string {
 	data, err := ioutil.ReadFile("dbpass.key")
 	handleError(err, "Retrieving Passwords")
@@ -53,7 +61,17 @@ func getProductSearch(table, query string) []Product {
 }
 
 func postProductAmount(table, product, amountChange string) {
-	hoeveelheid := retrieveHoeveelheid(("SELECT Hoeveelheid FROM " + table))
-	intAmount := hoeveelheid + changeToInt(amountChange)
-	giveProductAmount(("UPDATE " + table + " SET Hoeveelheid=" + changeToString(intAmount) + " WHERE Naam='" + product + "'"))
+	amountChangeInt := changeToInt(amountChange)
+	hoeveelheidInt := retrieveHoeveelheid(table, product)
+	newHoeveelheid := hoeveelheidInt + amountChangeInt
+
+	changeProductAttribute(("UPDATE " + table + " SET Hoeveelheid=" + changeToString(newHoeveelheid) + " WHERE Naam LIKE '%" + product + "%'"))
+	changedHoeveelheid := retrieveHoeveelheid(table, product)
+	if changedHoeveelheid < 0 {
+		changeProductAttribute(("UPDATE " + table + " SET Hoeveelheid=0 WHERE Naam LIKE '%" + product + "%'"))
+	}
+}
+
+func postProductStatus(table, product, statusChange string) {
+	changeProductAttribute(("UPDATE " + table + " SET Status='" + statusChange + "' WHERE Naam LIKE '%" + product + "%'"))
 }

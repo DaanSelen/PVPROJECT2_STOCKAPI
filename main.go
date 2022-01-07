@@ -112,10 +112,10 @@ func handleGetBroodWQuery(w http.ResponseWriter, r *http.Request) {
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if !ok || len(sQuery[0]) < 1 || sQuery[0] == "0" {
-		w.WriteHeader(400)
-	} else {
+	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
 		retrievedProducts = getProductSearch(cat1, sQuery[0])
+	} else {
+		w.WriteHeader(400)
 	}
 	json.NewEncoder(w).Encode(retrievedProducts)
 }
@@ -124,10 +124,10 @@ func handleGetBroodbelegWQuery(w http.ResponseWriter, r *http.Request) {
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if !ok || len(sQuery[0]) < 1 || sQuery[0] == "0" {
-		w.WriteHeader(400)
-	} else {
+	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
 		retrievedProducts = getProductSearch(cat2, sQuery[0])
+	} else {
+		w.WriteHeader(400)
 	}
 	json.NewEncoder(w).Encode(retrievedProducts)
 }
@@ -136,10 +136,10 @@ func handleGetFruitWQuery(w http.ResponseWriter, r *http.Request) {
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if !ok || len(sQuery[0]) < 1 || sQuery[0] == "0" {
-		w.WriteHeader(400)
-	} else {
+	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
 		retrievedProducts = getProductSearch(cat3, sQuery[0])
+	} else {
+		w.WriteHeader(400)
 	}
 	json.NewEncoder(w).Encode(retrievedProducts)
 }
@@ -148,10 +148,10 @@ func handleGetKruidWQuery(w http.ResponseWriter, r *http.Request) {
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if !ok || len(sQuery[0]) < 1 || sQuery[0] == "0" {
-		w.WriteHeader(400)
-	} else {
+	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
 		retrievedProducts = getProductSearch(cat4, sQuery[0])
+	} else {
+		w.WriteHeader(400)
 	}
 	json.NewEncoder(w).Encode(retrievedProducts)
 }
@@ -160,10 +160,10 @@ func handleGetSnoepWQuery(w http.ResponseWriter, r *http.Request) {
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if !ok || len(sQuery[0]) < 1 || sQuery[0] == "0" {
-		w.WriteHeader(400)
-	} else {
+	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
 		retrievedProducts = getProductSearch(cat5, sQuery[0])
+	} else {
+		w.WriteHeader(400)
 	}
 	json.NewEncoder(w).Encode(retrievedProducts)
 }
@@ -172,10 +172,10 @@ func handleGetVleesWQuery(w http.ResponseWriter, r *http.Request) {
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if !ok || len(sQuery[0]) < 1 || sQuery[0] == "0" {
-		w.WriteHeader(400)
-	} else {
+	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
 		retrievedProducts = getProductSearch(cat6, sQuery[0])
+	} else {
+		w.WriteHeader(400)
 	}
 	json.NewEncoder(w).Encode(retrievedProducts)
 }
@@ -184,10 +184,10 @@ func handleGetZuivelWQuery(w http.ResponseWriter, r *http.Request) {
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if !ok || len(sQuery[0]) < 1 || sQuery[0] == "0" {
-		w.WriteHeader(400)
-	} else {
+	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
 		retrievedProducts = getProductSearch(cat7, sQuery[0])
+	} else {
+		w.WriteHeader(400)
 	}
 	json.NewEncoder(w).Encode(retrievedProducts)
 }
@@ -195,77 +195,126 @@ func handleGetZuivelWQuery(w http.ResponseWriter, r *http.Request) {
 func handlePostBroodWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	acQuery, ok1 := r.URL.Query()["ac"]
-	pQuery, ok2 := r.URL.Query()["p"]
-	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
-		w.WriteHeader(400)
+	pQuery, ok1 := r.URL.Query()["p"]
+	acQuery, ok2 := r.URL.Query()["ac"]
+	scQuery, ok3 := r.URL.Query()["sc"]
+	if ok1 || len(pQuery) > 0 {
+		if ok2 || len(acQuery) > 0 {
+			postProductAmount(cat1, pQuery[0], acQuery[0])
+		} else if ok3 || len(scQuery) > 0 {
+			postProductStatus(cat1, pQuery[0], scQuery[0])
+		} else {
+			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
+		}
 	} else {
-		postProductAmount(cat1, pQuery[0], acQuery[0])
+		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
 func handlePostBroodbelegWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	acQuery, ok1 := r.URL.Query()["ac"]
-	pQuery, ok2 := r.URL.Query()["p"]
-	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
-		w.WriteHeader(400)
+	pQuery, ok1 := r.URL.Query()["p"]
+	acQuery, ok2 := r.URL.Query()["ac"]
+	scQuery, ok3 := r.URL.Query()["sc"]
+	if ok1 || len(pQuery) > 0 {
+		if ok2 || len(acQuery) > 0 {
+			postProductAmount(cat2, pQuery[0], acQuery[0])
+		} else if ok3 || len(scQuery) > 0 {
+			postProductStatus(cat2, pQuery[0], scQuery[0])
+		} else {
+			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
+		}
 	} else {
-		postProductAmount(cat2, pQuery[0], acQuery[0])
+		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
 func handlePostFruitWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	acQuery, ok1 := r.URL.Query()["ac"]
-	pQuery, ok2 := r.URL.Query()["p"]
-	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
-		w.WriteHeader(400)
+	pQuery, ok1 := r.URL.Query()["p"]
+	acQuery, ok2 := r.URL.Query()["ac"]
+	scQuery, ok3 := r.URL.Query()["sc"]
+	if ok1 || len(pQuery) > 0 {
+		if ok2 || len(acQuery) > 0 {
+			postProductAmount(cat3, pQuery[0], acQuery[0])
+		} else if ok3 || len(scQuery) > 0 {
+			postProductStatus(cat3, pQuery[0], scQuery[0])
+		} else {
+			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
+		}
 	} else {
-		postProductAmount(cat3, pQuery[0], acQuery[0])
+		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
 func handlePostKruidWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	pQuery, ok2 := r.URL.Query()["p"]
-	acQuery, ok1 := r.URL.Query()["ac"]
-	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
-		w.WriteHeader(400)
+	pQuery, ok1 := r.URL.Query()["p"]
+	acQuery, ok2 := r.URL.Query()["ac"]
+	scQuery, ok3 := r.URL.Query()["sc"]
+	if ok1 || len(pQuery) > 0 {
+		if ok2 || len(acQuery) > 0 {
+			postProductAmount(cat4, pQuery[0], acQuery[0])
+		} else if ok3 || len(scQuery) > 0 {
+			postProductStatus(cat4, pQuery[0], scQuery[0])
+		} else {
+			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
+		}
 	} else {
-		postProductAmount(cat4, pQuery[0], acQuery[0])
+		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
 func handlePostSnoepWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	pQuery, ok2 := r.URL.Query()["p"]
-	acQuery, ok1 := r.URL.Query()["ac"]
-	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
-		w.WriteHeader(400)
+	pQuery, ok1 := r.URL.Query()["p"]
+	acQuery, ok2 := r.URL.Query()["ac"]
+	scQuery, ok3 := r.URL.Query()["sc"]
+	if ok1 || len(pQuery) > 0 {
+		if ok2 || len(acQuery) > 0 {
+			postProductAmount(cat5, pQuery[0], acQuery[0])
+		} else if ok3 || len(scQuery) > 0 {
+			postProductStatus(cat5, pQuery[0], scQuery[0])
+		} else {
+			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
+		}
 	} else {
-		postProductAmount(cat5, pQuery[0], acQuery[0])
+		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
 func handlePostVleesWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	pQuery, ok2 := r.URL.Query()["p"]
-	acQuery, ok1 := r.URL.Query()["ac"]
-	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
-		w.WriteHeader(400)
+	pQuery, ok1 := r.URL.Query()["p"]
+	acQuery, ok2 := r.URL.Query()["ac"]
+	scQuery, ok3 := r.URL.Query()["sc"]
+	if ok1 || len(pQuery) > 0 {
+		if ok2 || len(acQuery) > 0 {
+			postProductAmount(cat6, pQuery[0], acQuery[0])
+		} else if ok3 || len(scQuery) > 0 {
+			postProductStatus(cat6, pQuery[0], scQuery[0])
+		} else {
+			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
+		}
 	} else {
-		postProductAmount(cat6, pQuery[0], acQuery[0])
+		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
 func handlePostZuivelWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	pQuery, ok2 := r.URL.Query()["p"]
-	acQuery, ok1 := r.URL.Query()["ac"]
-	if (!ok1 || len(acQuery[0]) < 1 || acQuery[0] == "0") || (!ok2 || len(pQuery[0]) < 1 || pQuery[0] == "0") {
-		w.WriteHeader(400)
+	pQuery, ok1 := r.URL.Query()["p"]
+	acQuery, ok2 := r.URL.Query()["ac"]
+	scQuery, ok3 := r.URL.Query()["sc"]
+	if ok1 || len(pQuery) > 0 {
+		if ok2 || len(acQuery) > 0 {
+			postProductAmount(cat7, pQuery[0], acQuery[0])
+		} else if ok3 || len(scQuery) > 0 {
+			postProductStatus(cat7, pQuery[0], scQuery[0])
+		} else {
+			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
+		}
 	} else {
-		postProductAmount(cat7, pQuery[0], acQuery[0])
+		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }

@@ -19,8 +19,9 @@ func initDBConn(password string) {
 	}
 }
 
-func retrieveHoeveelheid(queryString string) int {
+func retrieveHoeveelheid(table, product string) int {
 	var hoeveelheid int
+	queryString := "SELECT Hoeveelheid FROM " + table + " WHERE Naam LIKE '%" + product + "%'"
 
 	data, err := voorraad.Query(queryString)
 	handleError(err, "Getting hoeveelheid Query")
@@ -31,7 +32,6 @@ func retrieveHoeveelheid(queryString string) int {
 }
 
 func retrieveAllProducts(queryString string) []Product {
-	log.Println(queryString) //REMOVE LATER
 	data, err := voorraad.Query(queryString)
 	handleError(err, "Sending SQL Query for all ")
 	defer data.Close()
@@ -45,9 +45,7 @@ func retrieveAllProducts(queryString string) []Product {
 	return products
 }
 
-func giveProductAmount(queryString string) {
-	log.Println(queryString)
-	/*_, err := voorraad.Query(queryString)
-	handleError(err, "Sending SQL Query for all ")
-	*/
+func changeProductAttribute(queryString string) {
+	_, err := voorraad.Query(queryString)
+	handleError(err, "Sending SQL Query for changing product amount(hoeveelheid)")
 }
