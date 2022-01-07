@@ -43,6 +43,11 @@ func checkIfInt(value1 string) bool {
 	}
 }
 
+func getAllTables() []string {
+	tableList := retrieveAllTables()
+	return tableList
+}
+
 func getPasswords() string {
 	data, err := ioutil.ReadFile("dbpass.key")
 	handleError(err, "Retrieving Passwords")

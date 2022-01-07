@@ -19,12 +19,27 @@ func initDBConn(password string) {
 	}
 }
 
+func retrieveAllTables() []string {
+	var tableList []string
+
+	data, err := voorraad.Query("SHOW tables")
+	handleError(err, "Getting tables from Voorraad")
+	defer data.Close()
+	for data.Next() {
+		var table string
+		data.Scan(&table)
+		tableList = append(tableList, table)
+	}
+	return tableList
+}
+
 func retrieveHoeveelheid(table, product string) int {
 	var hoeveelheid int
 	queryString := "SELECT Hoeveelheid FROM " + table + " WHERE Naam LIKE '%" + product + "%'"
 
 	data, err := voorraad.Query(queryString)
 	handleError(err, "Getting hoeveelheid Query")
+	defer data.Close()
 	for data.Next() {
 		data.Scan(&hoeveelheid)
 	}

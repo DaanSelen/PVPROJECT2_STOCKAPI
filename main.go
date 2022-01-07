@@ -28,38 +28,40 @@ func main() {
 
 	myRouter.HandleFunc("/voorraad/all/brood", handleGetAllBrood).Methods("GET")
 	myRouter.HandleFunc("/voorraad/brood", handleGetBroodWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/brood", handlePostBroodWQuery).Methods("POST")
+	myRouter.HandleFunc("/voorraad/brood", handlePostBroodWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/broodbeleg", handleGetAllBroodbeleg).Methods("GET")
 	myRouter.HandleFunc("/voorraad/broodbeleg", handleGetBroodbelegWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/broodbeleg", handlePostBroodbelegWQuery).Methods("POST")
+	myRouter.HandleFunc("/voorraad/broodbeleg", handlePostBroodbelegWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/fruit", handleGetAllFruit).Methods("GET")
 	myRouter.HandleFunc("/voorraad/fruit", handleGetFruitWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/fruit", handlePostFruitWQuery).Methods("POST")
+	myRouter.HandleFunc("/voorraad/fruit", handlePostFruitWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/kruid", handleGetAllKruid).Methods("GET")
 	myRouter.HandleFunc("/voorraad/kruid", handleGetKruidWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/kruid", handlePostKruidWQuery).Methods("POST")
+	myRouter.HandleFunc("/voorraad/kruid", handlePostKruidWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/snoep", handleGetAllSnoep).Methods("GET")
 	myRouter.HandleFunc("/voorraad/snoep", handleGetSnoepWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/snoep", handlePostSnoepWQuery).Methods("POST")
+	myRouter.HandleFunc("/voorraad/snoep", handlePostSnoepWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/vlees", handleGetAllVlees).Methods("GET")
 	myRouter.HandleFunc("/voorraad/vlees", handleGetVleesWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/vlees", handlePostVleesWQuery).Methods("POST")
+	myRouter.HandleFunc("/voorraad/vlees", handlePostVleesWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/zuivel", handleGetAllZuivel).Methods("GET")
 	myRouter.HandleFunc("/voorraad/zuivel", handleGetZuivelWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/zuivel", handlePostZuivelWQuery).Methods("POST")
+	myRouter.HandleFunc("/voorraad/zuivel", handlePostZuivelWQuery).Methods("PATCH")
 
 	http.ListenAndServe(":61909", myRouter)
 }
 
 //ROOT RESPONSE
 func handleVoorraadRoot(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode("Root directory for the voorraad tree.")
+	json.NewEncoder(w).Encode("Root directory for the voorraad tree. Available options:")
+	tableList := getAllTables()
+	json.NewEncoder(w).Encode(tableList)
 }
 
 //ALL PRODUCTS WITHOUT QUERY
