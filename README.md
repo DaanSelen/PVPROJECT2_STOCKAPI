@@ -1,2 +1,2 @@
-# PVPROJECT2_APIWEB
-Api with website
+# PVPROJECT2_STOCKAPI
+Api for managing STOCK
