@@ -7,15 +7,22 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var (
-	voorraad *sql.DB
-	err      error
-)
-
 func initDBConn(password string) {
-	voorraad, err = sql.Open("mysql", "daan:"+password+"@tcp(192.168.178.23:3307)/voorraad") //IF connected with OPENVPN SERVER.
+	voorraad, err = sql.Open("mysql", databaseUser+":"+password+"@tcp("+ipAddress+":"+port+")/"+databaseName)
 	if err != nil {
-		log.Println("Connection to Database Server failed: ", err)
+		handleError(err, "Initialising database connection")
+	} else {
+		testConnection()
+	}
+}
+
+func testConnection() {
+	log.Println(infoTag, "TESTING DATABASE CONNECTION")
+	_, err := voorraad.Query("SELECT * FROM brood")
+	if err != nil {
+		log.Fatal(errorTag, "DATABASE CONNECTION FAILED. Are you connected to the internet?")
+	} else {
+		log.Println(infoTag, "DATABASE CONNECTION SUCCES.")
 	}
 }
 
@@ -23,7 +30,7 @@ func retrieveAllTables() []string {
 	var tableList []string
 
 	data, err := voorraad.Query("SHOW tables")
-	handleError(err, "Getting tables from Voorraad")
+	handleError(err, "Getting tables from voorraad")
 	defer data.Close()
 	for data.Next() {
 		var table string
