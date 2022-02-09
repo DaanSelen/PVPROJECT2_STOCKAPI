@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"io/ioutil"
 	"log"
 	"strconv"
@@ -13,6 +14,32 @@ type Product struct {
 	Status      string `json:"status"`
 }
 
+var (
+	requestCounter int = 0
+
+	voorraad *sql.DB
+	err      error
+)
+
+const ( //Tags
+	errorTag   string = "[Error]"
+	infoTag    string = "[Info]"
+	warningTag string = "[Warning]"
+
+	databaseUser string = "api"
+	databaseName string = "voorraad"
+	ipAddress    string = "192.168.178.20"
+	port         string = "3306"
+
+	cat1 string = "brood"
+	cat2 string = "broodbeleg"
+	cat3 string = "fruit"
+	cat4 string = "kruid"
+	cat5 string = "snoep"
+	cat6 string = "vlees"
+	cat7 string = "zuivel"
+)
+
 func initSys() {
 	dbpass := getPasswords()
 	initDBConn(dbpass)
@@ -20,7 +47,7 @@ func initSys() {
 
 func handleError(err error, location string) {
 	if err != nil {
-		log.Println("Error encountered at:", location, "error:", err)
+		log.Println(errorTag, "Error encountered at:", location, "error:", err)
 	}
 }
 
@@ -43,11 +70,6 @@ func checkIfInt(value1 string) bool {
 	}
 }
 
-func getAllTables() []string {
-	tableList := retrieveAllTables()
-	return tableList
-}
-
 func getPasswords() string {
 	data, err := ioutil.ReadFile("dbpass.key")
 	handleError(err, "Retrieving Passwords")
@@ -55,17 +77,26 @@ func getPasswords() string {
 	return dbpassword
 }
 
+func getAllTables() []string {
+	requestCounter++
+	tableList := retrieveAllTables()
+	return tableList
+}
+
 func getAllProducts(table string) []Product {
+	requestCounter++
 	retrievedProducts := retrieveAllProducts(("SELECT * FROM " + table))
 	return retrievedProducts
 }
 
 func getProductSearch(table, query string) []Product {
+	requestCounter++
 	retrievedProducts := retrieveAllProducts(("SELECT * FROM " + table + " WHERE naam LIKE '%" + query + "%'"))
 	return retrievedProducts
 }
 
 func postProductAmount(table, product, amountChange string) {
+	requestCounter++
 	amountChangeInt := changeToInt(amountChange)
 	hoeveelheidInt := retrieveHoeveelheid(table, product)
 	newHoeveelheid := hoeveelheidInt + amountChangeInt
@@ -78,5 +109,6 @@ func postProductAmount(table, product, amountChange string) {
 }
 
 func postProductStatus(table, product, statusChange string) {
+	requestCounter++
 	changeProductAttribute(("UPDATE " + table + " SET Status='" + statusChange + "' WHERE Naam LIKE '%" + product + "%'"))
 }
