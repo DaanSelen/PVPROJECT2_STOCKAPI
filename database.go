@@ -9,7 +9,7 @@ import (
 )
 
 func initDBConn(password string) {
-	voorraad, err = sql.Open("mysql", databaseUser+":"+password+"@tcp("+ipAddress+":"+port+")/"+databaseName)
+	voorraad, err = sql.Open("mysql", databaseUser+":"+password+"@tcp("+ipAddress+":"+port+")/"+databaseName) //Connect to database using specified credentials
 	if err != nil {
 		handleError(err, "Initialising database connection")
 	} else {
