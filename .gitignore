@@ -4,6 +4,9 @@
 *.so
 *.dylib
 *.key
+*.sum
+*.mod
+*.md
 
 # Test binary, built with `go test -c`
 *.test

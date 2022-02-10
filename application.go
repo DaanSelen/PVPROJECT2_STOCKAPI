@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"io/ioutil"
 	"log"
+	"os"
 	"strconv"
 )
 
@@ -21,7 +22,7 @@ var (
 	err      error
 )
 
-const ( //Tags
+const ( //ALL CONSTANT VARIABLES
 	errorTag   string = "[Error]"
 	infoTag    string = "[Info]"
 	warningTag string = "[Warning]"
@@ -111,4 +112,8 @@ func postProductAmount(table, product, amountChange string) {
 func postProductStatus(table, product, statusChange string) {
 	requestCounter++
 	changeProductAttribute(("UPDATE " + table + " SET Status='" + statusChange + "' WHERE Naam LIKE '%" + product + "%'"))
+}
+
+func closeApp() {
+	os.Exit(0)
 }

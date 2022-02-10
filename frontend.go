@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	log.Println(infoTag, "CELDSERV API APPLICATION INITIALISING")
+	log.Println(infoTag, "CELDSERV STOCKY™ APPLICATION INITIALISING")
 	initSys()
 
 	myRouter := mux.NewRouter().StrictSlash(true)
@@ -58,8 +58,8 @@ func handleVoorraadRoot(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequestCounter(w http.ResponseWriter, r *http.Request) {
-	log.Println(infoTag, "Current amount of request(s):", requestCounter)
-	json.NewEncoder(w).Encode("Current amount of request(s) (excluding this one): " + changeToString(requestCounter))
+	log.Println(infoTag, "Current amount of requests:", requestCounter)
+	json.NewEncoder(w).Encode("Current amount of requests (excluding this one): " + changeToString(requestCounter))
 }
 
 //ALL PRODUCTS WITHOUT QUERY

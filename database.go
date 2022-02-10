@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -20,7 +21,9 @@ func testConnection() {
 	log.Println(infoTag, "TESTING DATABASE CONNECTION")
 	_, err := voorraad.Query("SELECT * FROM brood")
 	if err != nil {
-		log.Fatal(errorTag, "DATABASE CONNECTION FAILED. Are you connected to the internet?")
+		log.Println(errorTag, "DATABASE CONNECTION FAILED. If you don't know what to do, contact an admin!")
+		fmt.Scanln()
+		closeApp()
 	} else {
 		log.Println(infoTag, "DATABASE CONNECTION SUCCES.")
 	}
