@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"database/sql"
 	"log"
 	"os"
 	"strconv"
@@ -24,9 +23,6 @@ var ( //ALL GLOBAL VARIABLES
 	databasePort     string
 	databaseIp       string
 	databasePassword string
-
-	voorraad *sql.DB
-	err      error
 )
 
 const ( //ALL GLOBAL CONSTANTS
@@ -44,6 +40,7 @@ const ( //ALL GLOBAL CONSTANTS
 )
 
 func getInfoFromConfig(keyword string) string {
+	var info string
 	f, err := os.Open("config.txt")
 	handleError(err, "Opening config.txt file, perhaps there is no config.txt?")
 	defer f.Close()
@@ -51,11 +48,12 @@ func getInfoFromConfig(keyword string) string {
 	for lineByLine.Scan() {
 		if !strings.Contains(lineByLine.Text(), "#") || lineByLine.Text() != "" { //Skipping empty rows and commented rows
 			if strings.Contains(lineByLine.Text(), (keyword + " = ")) {
-				info := strings.ReplaceAll(lineByLine.Text(), (keyword + " = "), "")
+				info = strings.ReplaceAll(lineByLine.Text(), (keyword + " = "), "")
 				return info
 			}
 		}
 	}
+	return info
 }
 
 func initSys() {

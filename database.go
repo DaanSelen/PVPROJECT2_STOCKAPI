@@ -8,8 +8,13 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func initDBConn(password string) {
-	voorraad, err = sql.Open("mysql", databaseUser+":"+password+"@tcp("+ipAddress+":"+port+")/"+databaseName) //Connect to database using specified credentials
+var (
+	voorraad *sql.DB
+	err      error
+)
+
+func initDBConn() {
+	voorraad, err = sql.Open("mysql", databaseUser+":"+databasePassword+"@tcp("+databaseIp+":"+databasePort+")/"+databaseName) //Connect to database using specified credentials
 	if err != nil {
 		handleError(err, "Initialising database connection")
 	} else {
