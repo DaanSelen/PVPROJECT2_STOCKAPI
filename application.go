@@ -19,13 +19,7 @@ type Product struct {
 var ( //ALL GLOBAL VARIABLES
 	requestCounter int = 0
 
-	databaseUser     string
-	databaseName     string
-	databasePort     string
-	databaseIp       string
-	databasePassword string
-
-	configKeywords = []string{"ApiPort", "DatabaseUser", "DatabasePassword", "DatabaseIP", "DatabasePort", "DatabaseName"}
+	configKeywords          = []string{"ApiPort", "DatabaseUser", "DatabasePassword", "DatabaseIP", "DatabasePort", "DatabaseName"}
 	configData     []string //INDEXES MUST MATCH configKeywords corresponding INDEX, OTHERWISE THE PROGRAM WILL FAIL.
 	cat            = []string{"brood", "broodbeleg", "fruit", "kruid", "snoep", "vlees", "zuivel"}
 )
