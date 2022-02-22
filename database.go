@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -14,7 +13,7 @@ var (
 )
 
 func initDBConn() {
-	voorraad, err = sql.Open("mysql", databaseUser+":"+databasePassword+"@tcp("+databaseIp+":"+databasePort+")/"+databaseName) //Connect to database using specified credentials
+	voorraad, err = sql.Open("mysql", configData[1]+":"+configData[2]+"@tcp("+configData[3]+":"+configData[4]+")/"+configData[5]) //Connect to database using specified credentials
 	if err != nil {
 		handleError(err, "Initialising database connection")
 	} else {
@@ -24,13 +23,20 @@ func initDBConn() {
 
 func testConnection() {
 	log.Println(infoTag, "TESTING DATABASE CONNECTION")
-	_, err := voorraad.Query("SELECT * FROM brood")
+	_, err := voorraad.Query("SHOW Databases")
 	if err != nil {
 		log.Println(errorTag, "DATABASE CONNECTION FAILED. If you don't know what to do, contact an admin!")
-		fmt.Scanln()
 		closeApp()
 	} else {
-		log.Println(infoTag, "DATABASE CONNECTION SUCCES.")
+		log.Println(infoTag, "DATABASE SERVER AND DATABASE CONNECTION SUCCES, TESTING DATABASE TABLES.")
+		_, err := voorraad.Query("SELECT * from brood")
+		if err != nil {
+			for _, x := range cat {
+				_, err := voorraad.Query("CREATE TABLE " + x + " (ID INT(20) NOT NULL, Naam VARCHAR(50) NOT NULL, Hoeveelheid INT(50) NOT NULL, Status VARCHAR(100) NOT NULL)")
+				handleError(err, "Creating tables")
+			}
+
+		}
 	}
 }
 

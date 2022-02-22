@@ -7,6 +7,7 @@
 *.sum
 *.mod
 *.md
+config.txt
 
 # Test binary, built with `go test -c`
 *.test

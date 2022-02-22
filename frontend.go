@@ -13,7 +13,7 @@ func main() {
 	initSys()
 
 	myRouter := mux.NewRouter().StrictSlash(true)
-	log.Println(infoTag, "READY FOR REQUESTS")
+	log.Println(infoTag, "READY FOR REQUESTS ON PORT:", configData[0])
 
 	myRouter.HandleFunc("/", handleVoorraadRoot).Methods("GET")
 	myRouter.HandleFunc("/voorraad", handleVoorraadRoot).Methods("GET")
@@ -21,33 +21,33 @@ func main() {
 
 	myRouter.HandleFunc("/voorraad/all/brood", handleGetAllBrood).Methods("GET")
 	myRouter.HandleFunc("/voorraad/brood", handleGetBroodWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/brood", handlePostBroodWQuery).Methods("PATCH")
+	myRouter.HandleFunc("/voorraad/brood", handlePatchBroodWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/broodbeleg", handleGetAllBroodbeleg).Methods("GET")
 	myRouter.HandleFunc("/voorraad/broodbeleg", handleGetBroodbelegWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/broodbeleg", handlePostBroodbelegWQuery).Methods("PATCH")
+	myRouter.HandleFunc("/voorraad/broodbeleg", handlePatchBroodbelegWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/fruit", handleGetAllFruit).Methods("GET")
 	myRouter.HandleFunc("/voorraad/fruit", handleGetFruitWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/fruit", handlePostFruitWQuery).Methods("PATCH")
+	myRouter.HandleFunc("/voorraad/fruit", handlePatchFruitWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/kruid", handleGetAllKruid).Methods("GET")
 	myRouter.HandleFunc("/voorraad/kruid", handleGetKruidWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/kruid", handlePostKruidWQuery).Methods("PATCH")
+	myRouter.HandleFunc("/voorraad/kruid", handlePatchKruidWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/snoep", handleGetAllSnoep).Methods("GET")
 	myRouter.HandleFunc("/voorraad/snoep", handleGetSnoepWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/snoep", handlePostSnoepWQuery).Methods("PATCH")
+	myRouter.HandleFunc("/voorraad/snoep", handlePatchSnoepWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/vlees", handleGetAllVlees).Methods("GET")
 	myRouter.HandleFunc("/voorraad/vlees", handleGetVleesWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/vlees", handlePostVleesWQuery).Methods("PATCH")
+	myRouter.HandleFunc("/voorraad/vlees", handlePatchVleesWQuery).Methods("PATCH")
 
 	myRouter.HandleFunc("/voorraad/all/zuivel", handleGetAllZuivel).Methods("GET")
 	myRouter.HandleFunc("/voorraad/zuivel", handleGetZuivelWQuery).Methods("GET")
-	myRouter.HandleFunc("/voorraad/zuivel", handlePostZuivelWQuery).Methods("PATCH")
+	myRouter.HandleFunc("/voorraad/zuivel", handlePatchZuivelWQuery).Methods("PATCH")
 
-	http.ListenAndServe(":61909", myRouter)
+	http.ListenAndServe((":" + configData[0]), myRouter)
 }
 
 //ROOT RESPONSE
@@ -66,43 +66,43 @@ func handleRequestCounter(w http.ResponseWriter, r *http.Request) {
 func handleGetAllBrood(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	retrievedBroden := getAllProducts(cat1)
+	retrievedBroden := getAllProducts(cat[0])
 	json.NewEncoder(w).Encode(retrievedBroden)
 }
 func handleGetAllBroodbeleg(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	retrievedBroodbeleg := getAllProducts(cat2)
+	retrievedBroodbeleg := getAllProducts(cat[1])
 	json.NewEncoder(w).Encode(retrievedBroodbeleg)
 }
 func handleGetAllFruit(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	retrievedFruit := getAllProducts(cat3)
+	retrievedFruit := getAllProducts(cat[2])
 	json.NewEncoder(w).Encode(retrievedFruit)
 }
 func handleGetAllKruid(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	retrievedKruid := getAllProducts(cat4)
+	retrievedKruid := getAllProducts(cat[3])
 	json.NewEncoder(w).Encode(retrievedKruid)
 }
 func handleGetAllSnoep(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	retrievedSnoep := getAllProducts(cat5)
+	retrievedSnoep := getAllProducts(cat[4])
 	json.NewEncoder(w).Encode(retrievedSnoep)
 }
 func handleGetAllVlees(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	retrievedVlees := getAllProducts(cat6)
+	retrievedVlees := getAllProducts(cat[5])
 	json.NewEncoder(w).Encode(retrievedVlees)
 }
 func handleGetAllZuivel(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	retrievedZuivel := getAllProducts(cat7)
+	retrievedZuivel := getAllProducts(cat[6])
 	json.NewEncoder(w).Encode(retrievedZuivel)
 }
 
@@ -112,87 +112,95 @@ func handleGetBroodWQuery(w http.ResponseWriter, r *http.Request) {
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
-		retrievedProducts = getProductSearch(cat1, sQuery[0])
+	if ok || len(sQuery) > 0 {
+		retrievedProducts = getProductSearch(cat[0], sQuery[0])
+		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
-	json.NewEncoder(w).Encode(retrievedProducts)
 }
 func handleGetBroodbelegWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
-		retrievedProducts = getProductSearch(cat2, sQuery[0])
+	if ok || len(sQuery) > 0 {
+		retrievedProducts = getProductSearch(cat[1], sQuery[0])
+		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
-	json.NewEncoder(w).Encode(retrievedProducts)
 }
 func handleGetFruitWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
-		retrievedProducts = getProductSearch(cat3, sQuery[0])
+	if ok || len(sQuery) > 0 {
+		retrievedProducts = getProductSearch(cat[2], sQuery[0])
+		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
-	json.NewEncoder(w).Encode(retrievedProducts)
 }
 func handleGetKruidWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
-		retrievedProducts = getProductSearch(cat4, sQuery[0])
+	if ok || len(sQuery) > 0 {
+		retrievedProducts = getProductSearch(cat[3], sQuery[0])
+		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
-	json.NewEncoder(w).Encode(retrievedProducts)
 }
 func handleGetSnoepWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
-		retrievedProducts = getProductSearch(cat5, sQuery[0])
+	if ok || len(sQuery) > 0 {
+		retrievedProducts = getProductSearch(cat[4], sQuery[0])
+		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
-	json.NewEncoder(w).Encode(retrievedProducts)
 }
 func handleGetVleesWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
-		retrievedProducts = getProductSearch(cat6, sQuery[0])
+	if ok || len(sQuery) > 0 {
+		retrievedProducts = getProductSearch(cat[5], sQuery[0])
+		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
-	json.NewEncoder(w).Encode(retrievedProducts)
 }
 func handleGetZuivelWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var retrievedProducts []Product
 
 	sQuery, ok := r.URL.Query()["s"]
-	if ok || len(sQuery[0]) > 1 || sQuery[0] != "0" {
-		retrievedProducts = getProductSearch(cat7, sQuery[0])
+	if ok || len(sQuery) > 0 {
+		retrievedProducts = getProductSearch(cat[6], sQuery[0])
+		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
 		w.WriteHeader(400)
+		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
-	json.NewEncoder(w).Encode(retrievedProducts)
 }
 
-func handlePostBroodWQuery(w http.ResponseWriter, r *http.Request) {
+//PATCH REQUESTS
+func handlePatchBroodWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	pQuery, ok1 := r.URL.Query()["p"]
@@ -200,17 +208,18 @@ func handlePostBroodWQuery(w http.ResponseWriter, r *http.Request) {
 	scQuery, ok3 := r.URL.Query()["sc"]
 	if ok1 || len(pQuery) > 0 {
 		if ok2 || len(acQuery) > 0 {
-			postProductAmount(cat1, pQuery[0], acQuery[0])
+			postProductAmount(cat[0], pQuery[0], acQuery[0])
 		} else if ok3 || len(scQuery) > 0 {
-			postProductStatus(cat1, pQuery[0], scQuery[0])
+			postProductStatus(cat[0], pQuery[0], scQuery[0])
 		} else {
 			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
 		}
 	} else {
+		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
-func handlePostBroodbelegWQuery(w http.ResponseWriter, r *http.Request) {
+func handlePatchBroodbelegWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	pQuery, ok1 := r.URL.Query()["p"]
@@ -218,17 +227,18 @@ func handlePostBroodbelegWQuery(w http.ResponseWriter, r *http.Request) {
 	scQuery, ok3 := r.URL.Query()["sc"]
 	if ok1 || len(pQuery) > 0 {
 		if ok2 || len(acQuery) > 0 {
-			postProductAmount(cat2, pQuery[0], acQuery[0])
+			postProductAmount(cat[1], pQuery[0], acQuery[0])
 		} else if ok3 || len(scQuery) > 0 {
-			postProductStatus(cat2, pQuery[0], scQuery[0])
+			postProductStatus(cat[1], pQuery[0], scQuery[0])
 		} else {
 			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
 		}
 	} else {
+		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
-func handlePostFruitWQuery(w http.ResponseWriter, r *http.Request) {
+func handlePatchFruitWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	pQuery, ok1 := r.URL.Query()["p"]
@@ -236,17 +246,18 @@ func handlePostFruitWQuery(w http.ResponseWriter, r *http.Request) {
 	scQuery, ok3 := r.URL.Query()["sc"]
 	if ok1 || len(pQuery) > 0 {
 		if ok2 || len(acQuery) > 0 {
-			postProductAmount(cat3, pQuery[0], acQuery[0])
+			postProductAmount(cat[2], pQuery[0], acQuery[0])
 		} else if ok3 || len(scQuery) > 0 {
-			postProductStatus(cat3, pQuery[0], scQuery[0])
+			postProductStatus(cat[2], pQuery[0], scQuery[0])
 		} else {
 			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
 		}
 	} else {
+		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
-func handlePostKruidWQuery(w http.ResponseWriter, r *http.Request) {
+func handlePatchKruidWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	pQuery, ok1 := r.URL.Query()["p"]
@@ -254,17 +265,18 @@ func handlePostKruidWQuery(w http.ResponseWriter, r *http.Request) {
 	scQuery, ok3 := r.URL.Query()["sc"]
 	if ok1 || len(pQuery) > 0 {
 		if ok2 || len(acQuery) > 0 {
-			postProductAmount(cat4, pQuery[0], acQuery[0])
+			postProductAmount(cat[3], pQuery[0], acQuery[0])
 		} else if ok3 || len(scQuery) > 0 {
-			postProductStatus(cat4, pQuery[0], scQuery[0])
+			postProductStatus(cat[3], pQuery[0], scQuery[0])
 		} else {
 			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
 		}
 	} else {
+		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
-func handlePostSnoepWQuery(w http.ResponseWriter, r *http.Request) {
+func handlePatchSnoepWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	pQuery, ok1 := r.URL.Query()["p"]
@@ -272,17 +284,18 @@ func handlePostSnoepWQuery(w http.ResponseWriter, r *http.Request) {
 	scQuery, ok3 := r.URL.Query()["sc"]
 	if ok1 || len(pQuery) > 0 {
 		if ok2 || len(acQuery) > 0 {
-			postProductAmount(cat5, pQuery[0], acQuery[0])
+			postProductAmount(cat[4], pQuery[0], acQuery[0])
 		} else if ok3 || len(scQuery) > 0 {
-			postProductStatus(cat5, pQuery[0], scQuery[0])
+			postProductStatus(cat[4], pQuery[0], scQuery[0])
 		} else {
 			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
 		}
 	} else {
+		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
-func handlePostVleesWQuery(w http.ResponseWriter, r *http.Request) {
+func handlePatchVleesWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	pQuery, ok1 := r.URL.Query()["p"]
@@ -290,17 +303,18 @@ func handlePostVleesWQuery(w http.ResponseWriter, r *http.Request) {
 	scQuery, ok3 := r.URL.Query()["sc"]
 	if ok1 || len(pQuery) > 0 {
 		if ok2 || len(acQuery) > 0 {
-			postProductAmount(cat6, pQuery[0], acQuery[0])
+			postProductAmount(cat[5], pQuery[0], acQuery[0])
 		} else if ok3 || len(scQuery) > 0 {
-			postProductStatus(cat6, pQuery[0], scQuery[0])
+			postProductStatus(cat[5], pQuery[0], scQuery[0])
 		} else {
 			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
 		}
 	} else {
+		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }
-func handlePostZuivelWQuery(w http.ResponseWriter, r *http.Request) {
+func handlePatchZuivelWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	pQuery, ok1 := r.URL.Query()["p"]
@@ -308,13 +322,14 @@ func handlePostZuivelWQuery(w http.ResponseWriter, r *http.Request) {
 	scQuery, ok3 := r.URL.Query()["sc"]
 	if ok1 || len(pQuery) > 0 {
 		if ok2 || len(acQuery) > 0 {
-			postProductAmount(cat7, pQuery[0], acQuery[0])
+			postProductAmount(cat[6], pQuery[0], acQuery[0])
 		} else if ok3 || len(scQuery) > 0 {
-			postProductStatus(cat7, pQuery[0], scQuery[0])
+			postProductStatus(cat[6], pQuery[0], scQuery[0])
 		} else {
 			json.NewEncoder(w).Encode("Only the 'p' query has been detected, possible other queries include: ac, sc")
 		}
 	} else {
+		w.WriteHeader(400)
 		json.NewEncoder(w).Encode("The 'p' query is required for this end of the API. Contact the admin if you don't know what to do.")
 	}
 }

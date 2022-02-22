@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -23,20 +24,16 @@ var ( //ALL GLOBAL VARIABLES
 	databasePort     string
 	databaseIp       string
 	databasePassword string
+
+	configKeywords = []string{"ApiPort", "DatabaseUser", "DatabasePassword", "DatabaseIP", "DatabasePort", "DatabaseName"}
+	configData     []string //INDEXES MUST MATCH configKeywords corresponding INDEX, OTHERWISE THE PROGRAM WILL FAIL.
+	cat            = []string{"brood", "broodbeleg", "fruit", "kruid", "snoep", "vlees", "zuivel"}
 )
 
 const ( //ALL GLOBAL CONSTANTS
 	errorTag   string = "[Error]"
 	infoTag    string = "[Info]"
 	warningTag string = "[Warning]"
-
-	cat1 string = "brood"
-	cat2 string = "broodbeleg"
-	cat3 string = "fruit"
-	cat4 string = "kruid"
-	cat5 string = "snoep"
-	cat6 string = "vlees"
-	cat7 string = "zuivel"
 )
 
 func getInfoFromConfig(keyword string) string {
@@ -58,15 +55,15 @@ func getInfoFromConfig(keyword string) string {
 
 func initSys() {
 	initVars()
+	askDBQuestion()
 	initDBConn()
 }
 
 func initVars() {
-	databaseUser = getInfoFromConfig("DatabaseUser")
-	databaseName = getInfoFromConfig("DatabaseName")
-	databasePort = getInfoFromConfig("DatabasePort")
-	databaseIp = getInfoFromConfig("DatabaseIp")
-	databasePassword = getInfoFromConfig("DatabasePassword")
+	for x := range configKeywords {
+		y := getInfoFromConfig(configKeywords[x])
+		configData = append(configData, y)
+	}
 }
 
 func handleError(err error, location string) {
@@ -130,6 +127,24 @@ func postProductStatus(table, product, statusChange string) {
 	changeProductAttribute(("UPDATE " + table + " SET Status='" + statusChange + "' WHERE Naam LIKE '%" + product + "%'"))
 }
 
+func askDBQuestion() {
+	log.Println(infoTag, " IS THE GIVEN DATABASE EMPTY OR SETUP CORRECTLY? [Y/n]")
+	var userInput string
+	fmt.Scanln(&userInput)
+	if !checkDBInput(strings.ToLower(userInput)) {
+		log.Println(warningTag, "PLEASE EMPTY THE DATABASE AND TRY AGAIN")
+		askDBQuestion()
+	}
+}
+func checkDBInput(userInput string) bool {
+	if userInput == "" || userInput == "y" {
+		return true
+	} else {
+		return false
+	}
+}
+
 func closeApp() {
+	fmt.Scanln()
 	os.Exit(0)
 }
