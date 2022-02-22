@@ -1,15 +1,16 @@
-CONFIG FILE (RENAME TO 'config.txt' IF NOT DONE ALREADY)
+#CONFIG FILE (RENAME TO 'config.txt' IF NOT DONE ALREADY)
+#LEAVE ONE EMPTY SPACE AFTER '='
 
 #API CONFIGURATION
-ApiPort = 1945
+ApiPort = 
 
 #DATABASE CONNECTION
-DatabaseIP = 192.168.178.20
-DatabasePort = 8800
+DatabaseIP =
+DatabasePort =
 
 #DATABASE NAME
-DatabaseName = voorraad
+DatabaseName = 
 
 #DATABASE AUTHORISATION
-DatabaseUser = api
-DatabasePassword = Doerak2003
+DatabaseUser = 
+DatabasePassword = 

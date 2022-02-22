@@ -29,13 +29,13 @@ func testConnection() {
 		closeApp()
 	} else {
 		log.Println(infoTag, "DATABASE SERVER AND DATABASE CONNECTION SUCCES, TESTING DATABASE TABLES.")
-		_, err := voorraad.Query("SELECT * from brood")
-		if err != nil {
-			for _, x := range cat {
-				_, err := voorraad.Query("CREATE TABLE " + x + " (ID INT(20) NOT NULL, Naam VARCHAR(50) NOT NULL, Hoeveelheid INT(50) NOT NULL, Status VARCHAR(100) NOT NULL)")
-				handleError(err, "Creating tables")
+		for x := range cat {
+			_, err := voorraad.Query("SELECT * from " + cat[x])
+			if err != nil {
+				log.Println(infoTag, "NO TABLE CALLED '"+cat[x]+"' DETECTED, CREATING IT.")
+				_, err := voorraad.Query("CREATE TABLE " + cat[x] + " (ID INT(20) NOT NULL, Naam VARCHAR(50) NOT NULL, Hoeveelheid INT(50) NOT NULL, Status VARCHAR(100) NOT NULL)")
+				handleError(err, "Creating "+cat[x]+" table")
 			}
-
 		}
 	}
 }
