@@ -8,7 +8,7 @@ CATEGORY fruit
 bananen, blauwe bessen, appels
 
 CATEGORY kruid
-zout, peper, knoflook, fajita kruiden
+zout, peper, knoflook, fajita kruiden, paprika poeder
 
 CATEGORY snacks
 chips, minisnacks, kroketten, frikandellen
