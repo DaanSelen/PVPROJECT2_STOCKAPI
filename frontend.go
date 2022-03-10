@@ -19,38 +19,31 @@ func main() {
 	myRouter.HandleFunc("/voorraad", handleVoorraadRoot).Methods("GET")
 	myRouter.HandleFunc("/requests", handleRequestCounter).Methods("GET")
 
-	myRouter.HandleFunc("/voorraad/all/brood", handleGetAllBrood).Methods("GET")
 	myRouter.HandleFunc("/voorraad/brood", handleGetBroodWQuery).Methods("GET")
 	myRouter.HandleFunc("/voorraad/brood", handlePatchBroodWQuery).Methods("PATCH")
 
-	myRouter.HandleFunc("/voorraad/all/broodbeleg", handleGetAllBroodbeleg).Methods("GET")
 	myRouter.HandleFunc("/voorraad/broodbeleg", handleGetBroodbelegWQuery).Methods("GET")
 	myRouter.HandleFunc("/voorraad/broodbeleg", handlePatchBroodbelegWQuery).Methods("PATCH")
 
-	myRouter.HandleFunc("/voorraad/all/fruit", handleGetAllFruit).Methods("GET")
 	myRouter.HandleFunc("/voorraad/fruit", handleGetFruitWQuery).Methods("GET")
 	myRouter.HandleFunc("/voorraad/fruit", handlePatchFruitWQuery).Methods("PATCH")
 
-	myRouter.HandleFunc("/voorraad/all/kruid", handleGetAllKruid).Methods("GET")
 	myRouter.HandleFunc("/voorraad/kruid", handleGetKruidWQuery).Methods("GET")
 	myRouter.HandleFunc("/voorraad/kruid", handlePatchKruidWQuery).Methods("PATCH")
 
-	myRouter.HandleFunc("/voorraad/all/snoep", handleGetAllSnoep).Methods("GET")
 	myRouter.HandleFunc("/voorraad/snoep", handleGetSnoepWQuery).Methods("GET")
 	myRouter.HandleFunc("/voorraad/snoep", handlePatchSnoepWQuery).Methods("PATCH")
 
-	myRouter.HandleFunc("/voorraad/all/vlees", handleGetAllVlees).Methods("GET")
 	myRouter.HandleFunc("/voorraad/vlees", handleGetVleesWQuery).Methods("GET")
 	myRouter.HandleFunc("/voorraad/vlees", handlePatchVleesWQuery).Methods("PATCH")
 
-	myRouter.HandleFunc("/voorraad/all/zuivel", handleGetAllZuivel).Methods("GET")
 	myRouter.HandleFunc("/voorraad/zuivel", handleGetZuivelWQuery).Methods("GET")
 	myRouter.HandleFunc("/voorraad/zuivel", handlePatchZuivelWQuery).Methods("PATCH")
 
 	http.ListenAndServe((":" + configData[0]), myRouter)
 }
 
-//ROOT RESPONSE
+//ROOT RESPONSES AND UTILITIES
 func handleVoorraadRoot(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("Root directory for the /voorraad tree. Available options:")
 	tableList := getAllTables()
@@ -62,51 +55,7 @@ func handleRequestCounter(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode("Current amount of requests (excluding this one): " + changeToString(requestCounter))
 }
 
-//ALL PRODUCTS WITHOUT QUERY
-func handleGetAllBrood(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	retrievedBroden := getAllProducts(cat[0])
-	json.NewEncoder(w).Encode(retrievedBroden)
-}
-func handleGetAllBroodbeleg(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	retrievedBroodbeleg := getAllProducts(cat[1])
-	json.NewEncoder(w).Encode(retrievedBroodbeleg)
-}
-func handleGetAllFruit(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	retrievedFruit := getAllProducts(cat[2])
-	json.NewEncoder(w).Encode(retrievedFruit)
-}
-func handleGetAllKruid(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	retrievedKruid := getAllProducts(cat[3])
-	json.NewEncoder(w).Encode(retrievedKruid)
-}
-func handleGetAllSnoep(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	retrievedSnoep := getAllProducts(cat[4])
-	json.NewEncoder(w).Encode(retrievedSnoep)
-}
-func handleGetAllVlees(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	retrievedVlees := getAllProducts(cat[5])
-	json.NewEncoder(w).Encode(retrievedVlees)
-}
-func handleGetAllZuivel(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	retrievedZuivel := getAllProducts(cat[6])
-	json.NewEncoder(w).Encode(retrievedZuivel)
-}
-
-//WITH QUERY
+//GET REQUESTS
 func handleGetBroodWQuery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var retrievedProducts []Product
@@ -116,8 +65,8 @@ func handleGetBroodWQuery(w http.ResponseWriter, r *http.Request) {
 		retrievedProducts = getProductSearch(cat[0], sQuery[0])
 		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
+		retrievedBroden := getAllProducts(cat[0])
+		json.NewEncoder(w).Encode(retrievedBroden)
 	}
 }
 func handleGetBroodbelegWQuery(w http.ResponseWriter, r *http.Request) {
@@ -129,8 +78,8 @@ func handleGetBroodbelegWQuery(w http.ResponseWriter, r *http.Request) {
 		retrievedProducts = getProductSearch(cat[1], sQuery[0])
 		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
+		retrievedBroden := getAllProducts(cat[1])
+		json.NewEncoder(w).Encode(retrievedBroden)
 	}
 }
 func handleGetFruitWQuery(w http.ResponseWriter, r *http.Request) {
@@ -142,8 +91,8 @@ func handleGetFruitWQuery(w http.ResponseWriter, r *http.Request) {
 		retrievedProducts = getProductSearch(cat[2], sQuery[0])
 		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
+		retrievedBroden := getAllProducts(cat[2])
+		json.NewEncoder(w).Encode(retrievedBroden)
 	}
 }
 func handleGetKruidWQuery(w http.ResponseWriter, r *http.Request) {
@@ -155,8 +104,8 @@ func handleGetKruidWQuery(w http.ResponseWriter, r *http.Request) {
 		retrievedProducts = getProductSearch(cat[3], sQuery[0])
 		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
+		retrievedBroden := getAllProducts(cat[3])
+		json.NewEncoder(w).Encode(retrievedBroden)
 	}
 }
 func handleGetSnoepWQuery(w http.ResponseWriter, r *http.Request) {
@@ -168,8 +117,8 @@ func handleGetSnoepWQuery(w http.ResponseWriter, r *http.Request) {
 		retrievedProducts = getProductSearch(cat[4], sQuery[0])
 		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
+		retrievedBroden := getAllProducts(cat[4])
+		json.NewEncoder(w).Encode(retrievedBroden)
 	}
 }
 func handleGetVleesWQuery(w http.ResponseWriter, r *http.Request) {
@@ -181,8 +130,8 @@ func handleGetVleesWQuery(w http.ResponseWriter, r *http.Request) {
 		retrievedProducts = getProductSearch(cat[5], sQuery[0])
 		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
+		retrievedBroden := getAllProducts(cat[5])
+		json.NewEncoder(w).Encode(retrievedBroden)
 	}
 }
 func handleGetZuivelWQuery(w http.ResponseWriter, r *http.Request) {
@@ -194,8 +143,8 @@ func handleGetZuivelWQuery(w http.ResponseWriter, r *http.Request) {
 		retrievedProducts = getProductSearch(cat[6], sQuery[0])
 		json.NewEncoder(w).Encode(retrievedProducts)
 	} else {
-		w.WriteHeader(400)
-		json.NewEncoder(w).Encode("The 's' query is required for this end of the API. Contact the admin if you don't know what to do.")
+		retrievedBroden := getAllProducts(cat[6])
+		json.NewEncoder(w).Encode(retrievedBroden)
 	}
 }
 

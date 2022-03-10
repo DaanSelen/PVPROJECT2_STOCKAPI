@@ -1,0 +1,20 @@
+CATEGORY brood
+bus brood, croissantjes, pistolets
+
+CATEGORY broodbeleg
+salami, schouderham, boterhamworst, kaas
+
+CATEGORY fruit
+bananen, blauwe bessen, appels
+
+CATEGORY kruid
+zout, peper, knoflook, fajita kruiden
+
+CATEGORY snacks
+chips, minisnacks, kroketten, frikandellen
+
+CATEGORY vlees
+kipfilet, shoarma, varkensvlees
+
+CATEGORY zuivel
+vlaflip, melk, yoghurt, kwark
